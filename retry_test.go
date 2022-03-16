@@ -14,11 +14,11 @@ const (
 	simpleMinimumTimePeriod = 2
 )
 
-type RetryTestSuite struct {
+type SuiteRetryTest struct {
 	suite.Suite
 }
 
-func (suite *RetryTestSuite) TestSimpleRetry() {
+func (suite *SuiteRetryTest) TestSimpleRetry() {
 	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
 
 	count := 0
@@ -30,7 +30,7 @@ func (suite *RetryTestSuite) TestSimpleRetry() {
 	suite.Assert().Equal(simpleRetryCount, count)
 }
 
-func (suite *RetryTestSuite) TestOnErrorCallback() {
+func (suite *SuiteRetryTest) TestOnErrorCallback() {
 	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
 
 	targetName := ""
@@ -43,7 +43,7 @@ func (suite *RetryTestSuite) TestOnErrorCallback() {
 	suite.Assert().Equal(simpleRetryName, targetName)
 }
 
-func (suite *RetryTestSuite) TestOnSuccessCallback() {
+func (suite *SuiteRetryTest) TestOnSuccessCallback() {
 	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
 
 	targetName := ""
@@ -56,7 +56,7 @@ func (suite *RetryTestSuite) TestOnSuccessCallback() {
 	suite.Assert().Equal(simpleRetryName, targetName)
 }
 
-func (suite *RetryTestSuite) TestStopFlag() {
+func (suite *SuiteRetryTest) TestStopFlag() {
 	stopFlag := make(chan struct{})
 	retry := PFRetry{retryName: simpleRetryName, stopFlag: stopFlag}
 
@@ -75,7 +75,7 @@ func (suite *RetryTestSuite) TestStopFlag() {
 	suite.Assert().NotZero(count)
 }
 
-func (suite *RetryTestSuite) TestMinimumTime() {
+func (suite *SuiteRetryTest) TestMinimumTime() {
 	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName, minimumRetryTime: time.Second * simpleMinimumTimePeriod}
 
 	minimumTime := time.Now()
@@ -94,5 +94,5 @@ func (suite *RetryTestSuite) TestMinimumTime() {
 
 // TestRetryTestSuite is the main entrypoint of the tests
 func TestRetryTestSuite(t *testing.T) {
-	suite.Run(t, new(RetryTestSuite))
+	suite.Run(t, new(SuiteRetryTest))
 }
