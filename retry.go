@@ -15,8 +15,8 @@ type ErrorCallback func(retryName string, err error)
 // The success callback when success happens
 type SuccessCallback func(retryName string)
 
-// AfmRetry is a structure defining what retry takes to work
-type AfmRetry struct {
+// PFRetry is a structure defining what retry takes to work
+type PFRetry struct {
 	retryCount       int
 	retryName        string
 	minimumRetryTime time.Duration
@@ -25,40 +25,40 @@ type AfmRetry struct {
 
 // SetRetryCount sets the retry count for the given
 // retry option
-func (a *AfmRetry) SetRetryCount(retryCount int) {
-	a.retryCount = retryCount
+func (r *PFRetry) SetRetryCount(retryCount int) {
+	r.retryCount = retryCount
 }
 
 // SetRetryName sets the name of the retry to identify it
 // when a callback occurs
-func (a *AfmRetry) SetRetryName(retryName string) {
-	a.retryName = retryName
+func (r *PFRetry) SetRetryName(retryName string) {
+	r.retryName = retryName
 }
 
 // Retry takes a function and retries it X times based on
 // the set retryCount
-func (a *AfmRetry) Retry(function RetryFunc, onSuccess SuccessCallback, onError ErrorCallback) error {
+func (r *PFRetry) Retry(function RetryFunc, onSuccess SuccessCallback, onError ErrorCallback) error {
 	funcCount := 1
 	for {
 		select {
-		case <-a.stopFlag:
+		case <-r.stopFlag:
 			return fmt.Errorf("stop signal received")
 		default:
-			minimumTime := time.Now().Add(a.minimumRetryTime)
+			minimumTime := time.Now().Add(r.minimumRetryTime)
 			err := function()
 			if err != nil {
 				if onError != nil {
-					onError(a.retryName, err)
+					onError(r.retryName, err)
 				}
 			} else {
 				if onSuccess != nil {
-					onSuccess(a.retryName)
+					onSuccess(r.retryName)
 				}
 				return nil
 			}
 
 			funcCount++
-			if a.retryCount > 0 && funcCount > a.retryCount {
+			if r.retryCount > 0 && funcCount > r.retryCount {
 				return err
 			}
 			endTime := time.Now()

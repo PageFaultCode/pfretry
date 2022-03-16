@@ -19,7 +19,7 @@ type RetryTestSuite struct {
 }
 
 func (suite *RetryTestSuite) TestSimpleRetry() {
-	retry := AfmRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
+	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
 
 	count := 0
 	_ = retry.Retry(func() error {
@@ -31,7 +31,7 @@ func (suite *RetryTestSuite) TestSimpleRetry() {
 }
 
 func (suite *RetryTestSuite) TestOnErrorCallback() {
-	retry := AfmRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
+	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
 
 	targetName := ""
 	_ = retry.Retry(func() error {
@@ -44,7 +44,7 @@ func (suite *RetryTestSuite) TestOnErrorCallback() {
 }
 
 func (suite *RetryTestSuite) TestOnSuccessCallback() {
-	retry := AfmRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
+	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName}
 
 	targetName := ""
 	_ = retry.Retry(func() error {
@@ -58,7 +58,7 @@ func (suite *RetryTestSuite) TestOnSuccessCallback() {
 
 func (suite *RetryTestSuite) TestStopFlag() {
 	stopFlag := make(chan struct{})
-	retry := AfmRetry{retryName: simpleRetryName, stopFlag: stopFlag}
+	retry := PFRetry{retryName: simpleRetryName, stopFlag: stopFlag}
 
 	count := 0
 	go func() {
@@ -76,7 +76,7 @@ func (suite *RetryTestSuite) TestStopFlag() {
 }
 
 func (suite *RetryTestSuite) TestMinimumTime() {
-	retry := AfmRetry{retryCount: simpleRetryCount, retryName: simpleRetryName, minimumRetryTime: time.Second * simpleMinimumTimePeriod}
+	retry := PFRetry{retryCount: simpleRetryCount, retryName: simpleRetryName, minimumRetryTime: time.Second * simpleMinimumTimePeriod}
 
 	minimumTime := time.Now()
 	minimumTime = minimumTime.Add(time.Second * simpleMinimumTimePeriod)
@@ -92,6 +92,7 @@ func (suite *RetryTestSuite) TestMinimumTime() {
 	suite.Assert().True(endTime.After(minimumTime))
 }
 
+// TestRetryTestSuite is the main entrypoint of the tests
 func TestRetryTestSuite(t *testing.T) {
 	suite.Run(t, new(RetryTestSuite))
 }
